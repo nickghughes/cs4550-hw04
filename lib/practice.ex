@@ -16,10 +16,24 @@ defmodule Practice do
     Practice.Calc.calc(expr)
   end
 
-  def factor(x) do
-    # Maybe delegate this too.
-    [1,2,x]
+  def factor(x, t \\ 2, factors \\ []) do
+    cond do
+      x < 2 ->
+        factors
+      rem(x, t) == 0 ->
+        factor(div(x, t), 2, factors ++ [t])
+      true ->
+        factor(x, t + 1, factors)
+    end
   end
 
-  # TODO: Add a palindrome? function.
+  def palindrome?(s) do
+    len = String.length(s)
+    cond do
+      len < 2 -> true
+      true ->
+        String.at(s, 0) === String.at(s, len - 1) &&
+          palindrome?(String.slice(s, 1, len - 2))
+    end
+  end
 end
