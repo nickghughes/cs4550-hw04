@@ -12,9 +12,10 @@ defmodule Practice do
   end
 
   def calc(expr) do
-    # This is more complex, delegate to lib/practice/calc.ex
     Practice.Calc.calc(expr)
   end
+
+  # Convert a number to its prime factors using recursion
 
   def factor(x, t \\ 2, factors \\ []) do
     cond do
@@ -26,6 +27,9 @@ defmodule Practice do
         factor(x, t + 1, factors)
     end
   end
+
+  # Determine if a given string is a palindrome using recursion
+  # Note: the empty string is considered a palindrome as this makes the base case easy
 
   def palindrome?(s) do
     len = String.length(s)

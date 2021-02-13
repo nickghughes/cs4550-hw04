@@ -8,6 +8,7 @@ defmodule Practice.Calc do
     Enum.any?(["+", "-", "*", "/"], fn(x) -> x === token end)
   end
 
+  # Used for postfix stack logic
   def priority(op) do
     case op do
       "+" -> 0
@@ -16,6 +17,9 @@ defmodule Practice.Calc do
       "/" -> 1
     end
   end
+
+  # Tags expr tokens i.e. "+" -> {:op, "+"}
+  # Use pattern matching to handle various cases
 
   def tag_token(token) do
     cond do
@@ -29,6 +33,8 @@ defmodule Practice.Calc do
   def tag_tokens(tokens) do
     [tag_token(hd(tokens)) | tag_tokens(tl(tokens))]
   end
+
+  # Converts set of tagged tokens to postfix notation using stack algorithm
 
   def to_postfix(_, out \\ [], stack \\ [])
 
@@ -53,6 +59,11 @@ defmodule Practice.Calc do
     to_postfix(tokens, out ++ [num], stack)
   end
 
+  # Converts postfix notation to prefix notation.
+  # Result will have a structure similar to the following:
+  #   ["+", [5.0, ["*", 10.0, 3.0]]]
+  # This structure makes it easy to evaluate the solution using recursion
+
   def to_prefix(_, stack \\ [])
 
   def to_prefix([], stack) do
@@ -67,6 +78,8 @@ defmodule Practice.Calc do
         to_prefix(postfix, [token | stack])
     end
   end
+
+  # Evaluate the expression from prefix notation using pattern matching
 
   def eval(["+" | operands]) do
     eval(hd(tl(operands))) + eval(hd(operands))
@@ -88,25 +101,15 @@ defmodule Practice.Calc do
     num
   end
 
+  # Calculates expression containing floats and operators including
+  #   +,-,*,/ with order of operations.
+
   def calc(expr) do
-    # This should handle +,-,*,/ with order of operations,
-    # but doesn't need to handle parens.
     expr
     |> String.split(~r/\s+/)
     |> tag_tokens
     |> to_postfix
     |> to_prefix
     |> eval
-  end
-
-  def factor(x, t, factors) do
-    cond do
-      x < 2 ->
-        factors
-      rem(x, t) == 0 ->
-        factor(div(x, t), 2, factors ++ [t])
-      true ->
-        factor(x, t + 1, factors)
-    end
   end
 end
